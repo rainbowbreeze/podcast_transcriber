@@ -1,0 +1,13 @@
+{
+  "downloads_limit": 2,
+  "if_directory_empty": "download_from_14_days",
+  "download_delay": 60,
+  "podcasts": [
+    {
+      "name": "The Bull",
+      "rss_link": "https://pod.link/1692088632.rss",
+      "path": "podcasts/the_bull",
+      "file_name_template": "[%publish_date%] %title%.%file_extension%"
+    }
+  ]
+}

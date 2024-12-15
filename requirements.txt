@@ -1,0 +1,19 @@
+requests
+beautifulsoup4
+
+#spotipy
+#spotipy-anon
+
+SpeechRecognition
+#openai-whisper engine requirements
+SpeechRecognition[whisper-local]
+# 20241215 - With Numpy 2.0.2 (required by whisper), the following error is returned
+#  RuntimeError: Numpy is not available
+# Solution: downgrate Numpy to something <2, so Numba is happy and whisper is happy
+# https://stackoverflow.com/a/78881990
+numpy<2
+
+podcast-downloader
+
+# mp3 to wav conversion
+pydub
