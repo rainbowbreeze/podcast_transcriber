@@ -1,6 +1,5 @@
 {
-  "downloads_limit": 2,
-  "if_directory_empty": "download_from_14_days",
+  "if_directory_empty": "download_all_from_feed",
   "download_delay": 60,
   "podcasts": [
     {

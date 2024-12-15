@@ -9,5 +9,5 @@ python3.11 -m venv .venv
 
 To download podcasts
 ```
-python -m podcast-downloader --config podcast-dowloader-config.json
+python -m podcast_downloader --config podcast-downloader-config.json 
 ```

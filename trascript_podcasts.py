@@ -84,10 +84,12 @@ def transcribe_mp3_to_text(mp3_file_path: str, output_file_path: str) -> None:
         text = recognizer.recognize_whisper(audio, model="base")
 
         with open(output_file_path, "w") as f:
+            f.write("** " + Path(mp3_file_path).stem + " **")
+            f.write('\n')
             f.write(text)
 
         print(f"Transcription saved to {output_file_path}")
-        #wav_file.remove()
+        wav_file.unlink()
 
     except sr.UnknownValueError:
         print("Speech Recognition could not understand the audio")
