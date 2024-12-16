@@ -33,14 +33,13 @@ def list_files_in_directory(directory_path: str) -> None:
   try:
     path = Path(directory_path)
     for file_path in path.iterdir():
-      if file_path.is_file():
+      if file_path.is_file() and ".mp3" == file_path.suffix:
         print(file_path.name)
         #print(file_path.stem)
         #print(file_path.suffix)
 
         # Search for the 
         transcript_file = file_path.with_suffix(".txt")
-        print(transcript_file.name)
         if transcript_file.exists():
           print(f" - A file with name '{transcript_file.name}' already exists.")
         else:
@@ -67,7 +66,7 @@ def transcribe_mp3_to_text(mp3_file_path: str, output_file_path: str) -> None:
     """
     recognizer = sr.Recognizer()
 
-    print(f"Start transcript of file '{mp3_file_path}'...")
+    print(f" Start transcript of file '{mp3_file_path}'...")
 
     # Check if the file needs to be conversted in a wav file
     wav_file = Path(mp3_file_path).with_suffix(".wav")
@@ -88,7 +87,7 @@ def transcribe_mp3_to_text(mp3_file_path: str, output_file_path: str) -> None:
             f.write('\n')
             f.write(text)
 
-        print(f"Transcription saved to {output_file_path}")
+        print(f" Transcription saved to {output_file_path}")
         wav_file.unlink()
 
     except sr.UnknownValueError:
@@ -111,7 +110,7 @@ def encode_to_wav_file(mp3_source_path: str, wav_dest_path:str) -> None:
     """
     try: 
         source_audio = AudioSegment.from_mp3(mp3_source_path)
-        print(f"  File is long {source_audio.duration_seconds} seconds")
+        print(f" File is long {source_audio.duration_seconds} seconds")
         source_audio.export(wav_dest_path, format="wav")
     except Exception as e:
         print(f"An expection occurred: {e}")
