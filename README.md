@@ -61,8 +61,16 @@ python trascript_podcasts.py --directory podcasts/the_bull --model base
   - CRITICAL: Critical errors that may prevent program execution
 
 ## Notes
-- The script processes files sequentially (one at a time) to ensure stability
-- Temporary WAV files are created during processing and automatically cleaned up
+- The script processes files sequentially (one at a time) on CUDA-enabled hardware, and with two tasks in paralled on cpu or mps hardware
+  - More info on the reasons are available as comments in the code
 - On Apple Silicon Macs (M1/M2/M3), the script will use CPU processing as faster-whisper doesn't support MPS (Metal Performance Shaders)
-- For best performance on Mac, consider using a smaller model size (tiny or base)
+- For best performance on Mac, consider using a smaller model size (base or small)
+  - Time required to transcribe a file of 2558 seconds, in Italian
+    - base:
+    - small: 555 secs
+    - medium: 1503 secs
+  - The quality bump in the translation between base and small model, is noticable, with small model way better than base model (more words translated, better puntuation, etc).
+  - The quality bump in the translation between small and medium, altough noticable, doesn't impact significantly the final quality of the translation. A few specific words medium model captured, while small model didn't, but the message is understandable.
+- On MacOS, Whisper downloads its models under  ~/.cache/whisper/
+- Temporary WAV files are created during processing in the podcasts directory, and automatically cleaned up if the translation was successful
 
