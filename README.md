@@ -73,4 +73,5 @@ python trascript_podcasts.py --directory podcasts/the_bull --model base
   - The quality bump in the translation between small and medium, altough noticable, doesn't impact significantly the final quality of the translation. Medium model captured a few specific words, while small model didn't, some more abbreviations and brand names, but the message is understandable.
 - Temporary WAV files are created during processing in the podcasts directory, and automatically cleaned up if the translation was successful
 - On MacOS, Whisper downloads its models under  ~/.cache/whisper/
+- [faster_whisper](https://github.com/SYSTRAN/faster-whisper) didn't work correctlyand didn't support mps during my tries...
 
