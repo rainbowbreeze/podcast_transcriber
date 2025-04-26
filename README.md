@@ -26,7 +26,7 @@ python -m podcast_downloader --config podcast-downloader-config.json
 
 ### Transcribing Podcasts
 ```bash
-python trascript_podcasts.py --directory podcasts/the_bull --model base --device auto
+python trascript_podcasts.py --directory podcasts/the_bull --model base
 ```
 
 ### Command Line Parameters
@@ -49,16 +49,6 @@ python trascript_podcasts.py --directory podcasts/the_bull --model base --device
   - medium: Even better accuracy, slower
   - large: Best accuracy, slowest
 
-- `--device`: Device to use for transcription (default: "auto")
-  ```bash
-  --device auto  # Options: auto, cpu, mps, cuda
-  ```
-  Available devices:
-  - auto: Automatically selects the best available device
-  - cpu: Forces CPU usage
-  - mps: Uses Apple Metal Performance Shaders (M1/M2 Macs only)
-  - cuda: Uses NVIDIA GPU (if available)
-
 - `--log-level`: Set the logging level (default: "INFO")
   ```bash
   --log-level INFO  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -71,7 +61,6 @@ python trascript_podcasts.py --directory podcasts/the_bull --model base --device
   - CRITICAL: Critical errors that may prevent program execution
 
 ## Notes
-- On Apple Silicon Macs (M1/M2), the transcription will automatically use the Metal Performance Shaders (MPS) backend for faster processing when available
 - The script processes files sequentially (one at a time) to ensure stability
 - Temporary WAV files are created during processing and automatically cleaned up
 - On Apple Silicon Macs (M1/M2/M3), the script will use CPU processing as faster-whisper doesn't support MPS (Metal Performance Shaders)

@@ -13,6 +13,7 @@ import logging
 import torch
 from pydub import AudioSegment
 import speech_recognition as sr
+import time
 
 
 # Global logger variable
@@ -29,7 +30,7 @@ def setup_logging(log_level=logging.INFO):
     global logger
     logging.basicConfig(
         level=log_level,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        format='%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
     logger = logging.getLogger(__name__)
@@ -60,7 +61,7 @@ def get_device() -> str:
     return 'cpu'
 
 
-def list_files_in_directory(directory_path: str, model_size: str = "base") -> None:
+def list_and_transcribe_files_in_directory(directory_path: str, model_size: str = "base") -> None:
     """
     Lists all files in the specified directory and transcribes them.
 
@@ -80,14 +81,25 @@ def list_files_in_directory(directory_path: str, model_size: str = "base") -> No
             logger.warning(f"No MP3 files found in {directory_path}")
             return
 
-        logger.info(f"Found {len(mp3_files)} MP3 files to process")
+        logger.debug(f"Found {len(mp3_files)} MP3 total files")
         
         # Get the best available device
-        device = get_device()
+        device : str = get_device()
         logger.info(f"Using device: {device}")
         
-        # Process files in parallel with max 1 concurrent thread
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        max_workers : int = 2 if device == 'mps' or device == 'cpu' else 1
+
+        # When CUDA is used, it's better to process one file at time.
+        # Instead, with CPU or MPS (with uses cpu because mps is not supported
+        #  natively by whisper), it's more convenient to process 2 files in
+        #  parallel. At least 15% to 20% faster in aggregate.
+        # It means that, when happening in parallel, the time to perform a 
+        #  transcription of a file is more than the time required to perform
+        #  the same transcription with no concurrency.
+        # But because more transcriptions are happening in parallel, at the end
+        #  the whole process is faster, compared to when all the files are
+        #  transcribed one after the other.
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = []
             for file_path in mp3_files:
                 transcript_file = file_path.with_suffix(".txt")
@@ -95,8 +107,7 @@ def list_files_in_directory(directory_path: str, model_size: str = "base") -> No
                     futures.append(executor.submit(transcribe_mp3_to_text, 
                                                  str(file_path), 
                                                  str(transcript_file),
-                                                 model_size,
-                                                 device))
+                                                 model_size))
             
             # Show progress bar
             for future in tqdm(concurrent.futures.as_completed(futures), 
@@ -111,27 +122,26 @@ def list_files_in_directory(directory_path: str, model_size: str = "base") -> No
         logger.error(f"Error: Directory '{directory_path}' not found.")
 
 
-def transcribe_mp3_to_text(mp3_file_path: str, output_file_path: str, model_size: str = "base", device: str = "cpu") -> None:
+def transcribe_mp3_to_text(source_mp3_file_path: str, output_txt_file_path: str, model_size: str = "base") -> None:
     """
     Transcribes an MP3 audio file to a text file using SpeechRecognition with Whisper.
 
     Args:
-        mp3_file_path: The path to the MP3 file.
-        output_file_path: The path to the output text file.
+        source_mp3_file_path: The path to the MP3 file.
+        output_txt_file_path: The path to the output text file.
         model_size: The size of the Whisper model to use
-        device: The device to use for inference ('mps', 'cuda', or 'cpu')
 
     Returns:
         None. Saves the transcribed text to the specified output file.
     """
-    logger.info(f"Starting transcription of '{Path(mp3_file_path).name}'...")
+    logger.info(f"Starting transcription of '{Path(source_mp3_file_path).name}'...")
 
     try:
         # Convert MP3 to WAV if needed
-        wav_file = Path(mp3_file_path).with_suffix(".wav")
+        wav_file = Path(source_mp3_file_path).with_suffix(".wav")
         if not wav_file.exists():
             logger.info(f"Converting to WAV format...")
-            encode_to_wav_file(mp3_file_path, str(wav_file))
+            encode_to_wav_file(source_mp3_file_path, str(wav_file))
 
         # Initialize recognizer
         recognizer = sr.Recognizer()
@@ -143,31 +153,33 @@ def transcribe_mp3_to_text(mp3_file_path: str, output_file_path: str, model_size
         
         with sr.AudioFile(str(wav_file)) as source:
             # Adjust for ambient noise
-            logger.info("Adjusting for ambient noise...")
+            logger.debug("Adjusting for ambient noise...")
             recognizer.adjust_for_ambient_noise(source, duration=0.5)
             
             # Record the audio
-            logger.info("Recording audio...")
+            logger.debug("Recording audio...")
             audio = recognizer.record(source)
             
             # Transcribe using Whisper
-            logger.info("Transcribing with Whisper...")
+            logger.debug("Transcribing with Whisper...")
+            start_time = time.time()
             text = recognizer.recognize_whisper(audio, 
                                               model=model_size,
                                               show_dict=False)
+            time_for_transcription = time.time() - start_time
         
         # Write the transcription to file
-        with open(output_file_path, "w", encoding="utf-8") as f:
-            f.write(f"** {Path(mp3_file_path).stem} **\n\n")
+        with open(output_txt_file_path, "w", encoding="utf-8") as f:
+            f.write(f"** {Path(source_mp3_file_path).stem} **\n\n")
             f.write(text)
 
-        logger.info(f"Transcription saved to {output_file_path}")
+        logger.info(f"Transcription completed in {time_for_transcription:.0f} seconds and saved to {output_txt_file_path}")
         
         # Clean up WAV file
         wav_file.unlink()
 
     except Exception as e:
-        logger.error(f"Error processing {mp3_file_path}: {str(e)}")
+        logger.error(f"Error processing {source_mp3_file_path}: {str(e)}")
         raise
 
 
@@ -184,7 +196,7 @@ def encode_to_wav_file(mp3_source_path: str, wav_dest_path: str) -> None:
     """
     try: 
         source_audio = AudioSegment.from_mp3(mp3_source_path)
-        logger.info(f"File duration: {source_audio.duration_seconds:.2f} seconds")
+        logger.debug(f"File duration: {source_audio.duration_seconds:.0f} seconds")
         source_audio.export(wav_dest_path, format="wav")
     except Exception as e:
         logger.error(f"Error converting to WAV: {e}")
@@ -202,9 +214,6 @@ def main() -> None:
     parser.add_argument("--model", default="base", 
                        choices=["tiny", "base", "small", "medium", "large"],
                        help="Whisper model size to use")
-    parser.add_argument("--device", choices=["auto", "cpu", "mps", "cuda"],
-                       default="auto",
-                       help="Device to use for transcription (default: auto)")
     parser.add_argument("--log-level", default="INFO",
                        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
                        help="Set the logging level")
@@ -212,16 +221,10 @@ def main() -> None:
     args = parser.parse_args()
     directory_path = "podcasts/the_bull"
     
-    # Override device if specified
-    if args.device != "auto":
-        global_device = args.device
-    else:
-        global_device = get_device()
-    
     # Set up logging with the specified level
     setup_logging(getattr(logging, args.log_level))
     
-    list_files_in_directory(directory_path, args.model)
+    list_and_transcribe_files_in_directory(directory_path, args.model)
 
 
 if __name__ == "__main__":
