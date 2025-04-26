@@ -1,13 +1,20 @@
+import argparse
+
 from typing import List
 from pathlib import Path
 
-def beaufity_and_merge_files(directory_path: str, output_file_path: str) -> None:
+def beaufity_and_merge_files(
+    directory_path: str, 
+    output_file_path: str, 
+    verbose: bool = False
+    ) -> None:
   """
   Find all trascript files in a directory, "beautify" the text and merge everything in a single file
 
   Args:
     directory_path: The path to the directory.
     output_file_path: The path of the destination file where the final text will be added
+    verbose: print more verbose output of the executed operations
 
   Returns:
     None. The output is saved in the output file
@@ -42,12 +49,16 @@ def beaufity_and_merge_files(directory_path: str, output_file_path: str) -> None
 
 
 
-def beautify_text(source_text: str) -> str:
+def beautify_text(
+    source_text: str,
+    verbose: bool = False
+    ) -> str:
   """
   Take a transcripted podcast text, and clean it up.
 
   Args:
     source_text: The text to beautify.
+    verbose: print more verbose output of the executed operations
 
   Returns:
     str. The text improve.
@@ -56,8 +67,10 @@ def beautify_text(source_text: str) -> str:
   # Check for initial parts to remove
   heads: List[str] = [
     "Il tuo podcast! Diffinanza personale",
+    "Il tuo podcast! Di finanza personale!",
     "Il tuo podcast. Diffinanza personale",
     "Il tuo podcast Diffinanza personale",
+    "Il tuo podcast di finanza personale!",
     "Il tuo podcast, di finanza personale",
     "Il tuo podcast di finanza personale",
     "Il tuo podcast, definanza personale",
@@ -65,6 +78,9 @@ def beautify_text(source_text: str) -> str:
     "Il tuo podcast, differenza personale",
     "Il tuo podcast. Di finanza personale",
     "Il tuo podcast. Definanza personale",
+    "Il tuo podcast. Definitimola personalmente",
+    "In tuo potcas, di finanza personale",
+    "in tuo podcast di finanza personale",
   ]
   uppercase_source_text: str = source_text.upper()
 
@@ -125,15 +141,27 @@ def beautify_text(source_text: str) -> str:
 
 
 
-def main() -> None:
+def main(verbose: bool = False) -> None:
   """
   Gets the directory path from the user and lists the files.
+
+  Args:
+    verbose: print more verbose output of the executed operations
   """
   #directory_path: str = input("Enter the directory path: ")
   directory_path: str = "podcasts/the_bull"
   output_file_path: str = "podcasts/the_bull_total.txt"
-  beaufity_and_merge_files(directory_path, output_file_path)
+  beaufity_and_merge_files(directory_path, output_file_path, verbose)
 
 
 if __name__ == "__main__":
-  main()
+    parser = argparse.ArgumentParser(description="Merge different podcast transcription files in a single file")
+
+    # optional boolean parameter
+    parser.add_argument("-v", "--verbose", action="store_true", default=False, help="Increase output verbosity")
+    args = parser.parse_args()
+
+    if args.verbose:
+        print("Verbose mode enabled.")
+
+    main(args.verbose)
