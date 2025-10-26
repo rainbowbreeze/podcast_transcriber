@@ -4,7 +4,7 @@
   "podcasts": [
     {
       "name": "The Bull",
-      "rss_link": "https://pod.link/1692088632.rss",
+      "rss_link": "https://feeds.megaphone.fm/RICCARDOSPADA2271908995",
       "path": "podcasts/the_bull",
       "file_name_template": "[%publish_date%] %title%.%file_extension%"
     }

@@ -69,9 +69,11 @@ python trascript_podcasts.py --directory podcasts/the_bull --model base
     - base: 202 secs
     - small: 555 secs
     - medium: 1503 secs
-  - The quality bump in the translation between base and small model, is noticable, with small model way better than base model (more words translated, better puntuation, etc).
+  - The quality bump in the translation between base and small model is noticable, with small model way better than base model (more words translated, better puntuation, etc).
   - The quality bump in the translation between small and medium, altough noticable, doesn't impact significantly the final quality of the translation. Medium model captured a few specific words, while small model didn't, some more abbreviations and brand names, but the message is understandable.
 - Temporary WAV files are created during processing in the podcasts directory, and automatically cleaned up if the translation was successful
 - On MacOS, Whisper downloads its models under  ~/.cache/whisper/
 - [faster_whisper](https://github.com/SYSTRAN/faster-whisper) didn't work correctlyand didn't support mps during my tries...
 
+## Where to find podcasts
+https://pod.link/ is a good start. Search for the podcast, open the Podcast Republic link, and in the Podcast Republic pace, copy the "Open the RSS" link. Use the link to configure the podcast source in the `podcast-downloader-config.json` file.
