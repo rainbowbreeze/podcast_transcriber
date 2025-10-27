@@ -20,13 +20,18 @@ pip install -r requirements.txt
 ## Usage
 
 ### Downloading Podcasts
+You first need mp3 files with podcast episodes to transcribe.  
+If you already have, put them in a folder under this project. For example `podcasts/my_preferred_podcasts/`.  
+Otherwise, the module [podcast_downloader](https://github.com/dplocki/podcast-downloader) can download podcasts episodes for you. This projects provide an example config file to download all the episodes from an existing podcast.
 ```bash
 python -m podcast_downloader --config podcast-downloader-config.json
 ```
+If the script is relauched, only new episodes are downloaded.  
+
 
 ### Transcribing Podcasts
 ```bash
-python trascript_podcasts.py --directory podcasts/the_bull --model base
+python trascript_podcasts.py --directory podcasts/the_bull --model medium --log-level info
 ```
 
 ### Command Line Parameters
@@ -66,13 +71,31 @@ More on available models at https://absadiki.github.io/pywhispercpp/#pywhispercp
   - base: 202 secs
   - small: 555 secs
   - medium: 1503 secs
+- Time required to transcribe a file of 2558 seconds, in Italian, using the GPU of a Mac M1 Pro
+  - medium: 264 secs
 - Quality of the models:
   - The quality bump in the translation between base and small model is noticable, with small model way better than base model (more words translated, better puntuation, etc).
   - The quality bump in the translation between small and medium, altough noticable, doesn't impact significantly the final quality of the translation. Medium model captured a few specific words, while small model didn't, some more abbreviations and brand names, but the message is understandable.
+  - Because the time difference once GPU is used decrease significantly, my suggestion is to use the medium model, unless there are speficic reasons for using another model
 - Temporary WAV files are created during processing in the podcasts directory, and automatically cleaned up if the translation was successful
-- whisper models are downloaded under the `whisper_models` folder, instead of user folder
+- whisper models are downloaded under the `whisper_models` project folder, instead of user folder.
+  - change it in the code if you prefer to use shared models across different apps using whispercpp module.
 
 
 ## Where to find podcasts
 https://pod.link/ is a good start.  
 Search for the podcast, open the Podcast Republic link, and in the Podcast Republic pace, copy the "Open the RSS" link. Use the link to configure the podcast source in the `podcast-downloader-config.json` file.
+
+
+## License
+
+Project released under [GNU GPL 3](LICENSE).
+
+
+## Acknowledgements and libraries used
+
+This project utilizes the following excellent open-source libraries:
+
+*   [podcast-downloader](https://github.com/dplocki/podcast-downloader): For downloading podcast episodes.
+*   [pydub](https://github.com/jiaaro/pydub): For audio manipulation, such as converting MP3 to WAV.
+*   [pywhispercpp](https://github.com/abdeladim-s/pywhispercpp): For efficient and accurate audio transcription using Whisper models.
