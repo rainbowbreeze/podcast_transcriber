@@ -43,6 +43,9 @@ The podcast transcription is done using [pywhispercpp](https://github.com/abdela
 python trascript_podcasts.py --directory podcasts/the_bull --model medium --log-level info
 ```
 
+Language of the podcast is automatically detected, so it works with all the languages supported by whisper.  
+It could be possible to force the automatic translation and transcription to a particular language, but the Model class needs to be configured in code.
+
 
 
 ### Command Line Parameters
