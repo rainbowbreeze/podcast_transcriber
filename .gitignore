@@ -1,5 +1,8 @@
-# Podcast MP£ files
+# Podcast MP3 files
 podcasts/
+
+# Whisper.cpp Model directory
+whisper_models/
 
 # macOS specific files
 .DS_Store

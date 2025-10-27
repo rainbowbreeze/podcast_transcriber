@@ -1,18 +1,7 @@
-# 20241212 - Python 3.11 max, otherwise Numba (required by openai-whisper) won't work
-
 # Download podcasts
 podcast-downloader
 
-# Core dependencies
-pydub>=0.25.1
-tqdm>=4.66.1
-
-# Audio processing
-numpy<2  # Required for compatibility with Numba
-SpeechRecognition
-SpeechRecognition[whisper-local]
-#openai-whisper engine requirements
-# 20241215 - With Numpy 2.0.2 (required by whisper), the following error is returned
-#  RuntimeError: Numpy is not available
-# Solution: downgrate Numpy to something <2, so Numba is happy and whisper is happy
-# https://stackoverflow.com/a/78881990
+# File transcriptions
+pydub
+# https://absadiki.github.io/pywhispercpp/
+pywhispercpp
