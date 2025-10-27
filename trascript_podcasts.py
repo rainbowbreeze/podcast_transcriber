@@ -163,7 +163,7 @@ def main() -> None:
         )
     parser.add_argument(
         "--model",
-        default="base",
+        default="medium",
         choices=["tiny", "base", "small", "medium", "large-v1", "large-v2", "large-v3"],
         help="Whisper model size to use"
         )

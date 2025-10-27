@@ -17,6 +17,7 @@ source .venv/bin/activate  # On Unix/macOS
 pip install -r requirements.txt
 ```
 
+
 ## Usage
 
 ### Downloading Podcasts
@@ -28,11 +29,21 @@ python -m podcast_downloader --config podcast-downloader-config.json
 ```
 If the script is relauched, only new episodes are downloaded.  
 
+Where to find podcasts:
+- https://pod.link/ is a good start.  
+- Search for the podcast, open the `Podcast Republic` link, and in the Podcast Republic page, copy the "Open the RSS" link.
+- Use the link to configure the podcast source in the `podcast-downloader-config.json` file.
+
+
 
 ### Transcribing Podcasts
+
+The podcast transcription is done using [pywhispercpp](https://github.com/abdeladim-s/pywhispercpp), and should be able to leverage GPU on different systems.
 ```bash
 python trascript_podcasts.py --directory podcasts/the_bull --model medium --log-level info
 ```
+
+
 
 ### Command Line Parameters
 
@@ -44,7 +55,7 @@ python trascript_podcasts.py --directory podcasts/the_bull --model medium --log-
 
 - `--model`: Whisper model size to use (default: "base")
   ```bash
-  --model base  # Options: tiny, base, small, medium, large-v1, large-v2, large-v3
+  --model mediumn  # Options: tiny, base, small, medium, large-v1, large-v2, large-v3
   ```
   Available model sizes:
   - tiny: Fastest but least accurate
@@ -66,7 +77,9 @@ More on available models at https://absadiki.github.io/pywhispercpp/#pywhispercp
   - CRITICAL: Critical errors that may prevent program execution
 
 
+
 ## Notes
+
 - Time required to transcribe a file of 2558 seconds, in Italian, using only the CPU of a Mac M1 Pro
   - base: 202 secs
   - small: 555 secs
@@ -82,20 +95,17 @@ More on available models at https://absadiki.github.io/pywhispercpp/#pywhispercp
   - change it in the code if you prefer to use shared models across different apps using whispercpp module.
 
 
-## Where to find podcasts
-https://pod.link/ is a good start.  
-Search for the podcast, open the Podcast Republic link, and in the Podcast Republic pace, copy the "Open the RSS" link. Use the link to configure the podcast source in the `podcast-downloader-config.json` file.
+
+## Acknowledgements
+
+This project utilizes the following amazing open-source libraries:
+
+*   [podcast-downloader](https://github.com/dplocki/podcast-downloader): For downloading podcast episodes.
+*   [pydub](https://github.com/jiaaro/pydub): For audio manipulation, such as converting MP3 to WAV.
+*   [pywhispercpp](https://github.com/abdeladim-s/pywhispercpp): For efficient and accurate audio transcription using Whisper models.
+
 
 
 ## License
 
 Project released under [GNU GPL 3](LICENSE).
-
-
-## Acknowledgements and libraries used
-
-This project utilizes the following excellent open-source libraries:
-
-*   [podcast-downloader](https://github.com/dplocki/podcast-downloader): For downloading podcast episodes.
-*   [pydub](https://github.com/jiaaro/pydub): For audio manipulation, such as converting MP3 to WAV.
-*   [pywhispercpp](https://github.com/abdeladim-s/pywhispercpp): For efficient and accurate audio transcription using Whisper models.
