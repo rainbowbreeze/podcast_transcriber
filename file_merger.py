@@ -81,11 +81,13 @@ def beautify_text(
     "Il tuo podcast. Definitimola personalmente",
     "In tuo potcas, di finanza personale",
     "in tuo podcast di finanza personale",
+    "Domanda da un miliardo di dollari oggi a The Bull"
   ]
   uppercase_source_text: str = source_text.upper()
 
+  pos : int = -1
   for search_keyword in heads:
-    pos: int = uppercase_source_text.find(search_keyword.upper())
+    pos = uppercase_source_text.find(search_keyword.upper())
     # > 2000 means the string was found at the closing of the podcast, not a the beginning
     if pos != -1 and pos < 2000:
       # Add the lenght of the searched keyword
@@ -93,7 +95,7 @@ def beautify_text(
       # Add the additional punctiation mark and then the space
       pos += 2
       source_text = source_text[pos:]
-      #print(f" Found at position {pos}")
+      #print(f" Head \"{search_keyword}\" found at position {pos}")
       break
   
   if pos == -1 or pos > 2000:
@@ -102,13 +104,14 @@ def beautify_text(
 
   # Check for final parts to remove
   tails: List[str] = [
-    "invito a mettere segui",
-    "invito come sempre mettere segui",
-    "come sempre mettere segui",
+    "vi invito a mettere segui",
+    "vi invito come sempre mettere",
+    "vi invito come sempre a mettere",
     "a mettere segui attivare",
     "ricordo di mettere segui",
     "ricordo di cliccare su segui",
     "se metteste segui attivaste",
+    "a mettere segui e attivare le notifiche",
     "metta segui e attivi",
     "mettere segui a attivare",
     "mettere segui attivare",
@@ -116,13 +119,28 @@ def beautify_text(
     "mettete segui su Spotify",
     "mettete segui al podcast",
     "mettere segui al podcast",
+    "mettete segui attivate le notifiche su",
+    "Vi invito inoltre come sempre a mettere segui",
+    "prima di chiudere avrete ancora una volta",
+    "attivare le notifiche su Spotify",
+    "attivi le notifiche su qualunque piattaforma",
     "cliccando su segui e attivando le notifiche",
     "cliccare su segui",
+    "cliccare su Segui su Spotify o Apple Podcast",
+    "Mi raccomando non smettete di seguirci",
     "un rating a 5 stelle",
     "lasciate una recensione a 5 stelle",
     "lasciare una recensione a 5 stelle",
     "metterebbe una recensione a 5 stelle",
-    "mettete segui i 5 stelle"
+    "mettete segui i 5 stelle",
+    "Per il resto, spero che tutto questo vi sia piaciuto",
+    "iscrivervi, mettere like ai video e attivare le notifiche",
+    "Per questi episodi, invece, è davvero tutto",
+    "Per questo episodio invece è davvero tutto",
+    "Per il momento invece questo episodio finisce qui",
+    "questo episodio per il momento finisce qui",
+    "per questo episodio invece è davvero tutto",
+    "Nel frattempo vi invito come sempre a mettere segui",
   ]
   uppercase_source_text: str = source_text.upper()
 
@@ -131,7 +149,7 @@ def beautify_text(
     # < 20000 means the string was found at the closing of the podcast, not a the beginning
     if pos != -1 and pos > 15500:
       source_text = source_text[:pos]
-      #print(f" Found at position {pos}")
+      #print(f" Tail \"{search_keyword}\" found at position {pos}")
       break
   
   if pos == -1 or pos < 15500:
