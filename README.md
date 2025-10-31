@@ -40,7 +40,7 @@ Where to find podcasts:
 
 The podcast transcription is done using [pywhispercpp](https://github.com/abdeladim-s/pywhispercpp), and should be able to leverage GPU on different systems.
 ```bash
-python trascript_podcasts.py --directory podcasts/the_bull --model medium --log-level info
+python trascript_podcasts.py --directory podcasts/the_bull --model medium --log-level INFO
 ```
 
 Language of the podcast is automatically detected, so it works with all the languages supported by whisper.  

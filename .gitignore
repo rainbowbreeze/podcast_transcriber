@@ -3,6 +3,8 @@ podcasts/
 
 # Whisper.cpp Model directory
 whisper_models/
+# Whisper.cpp Logs
+/whispercpp.log
 
 # macOS specific files
 .DS_Store

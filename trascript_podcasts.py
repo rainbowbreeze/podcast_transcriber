@@ -99,7 +99,7 @@ def transcribe_mp3_to_text(source_mp3_file_path: str, output_txt_file_path: str,
 
         # Available models at https://absadiki.github.io/pywhispercpp/#pywhispercpp.constants.AVAILABLE_MODELS
         # redirect_whispercpp_logs_to=False to see details of the model load, recognized processor and other parameters
-        model = Model(model_size, models_dir=str(models_dir), redirect_whispercpp_logs_to=None)
+        model = Model(model_size, models_dir=str(models_dir)) #, redirect_whispercpp_logs_to='whispercpp.log')
         logger.debug("Transcribing with whisper.cpp...")
         start_time = time.time()
 
