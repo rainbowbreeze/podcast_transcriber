@@ -50,15 +50,14 @@ It could be possible to force the automatic translation and transcription to a p
 
 ### Command Line Parameters
 
-#### Optional Parameters
-- `--directory`: Path to the directory containing MP3 files to transcribe (default: "podcasts/the_bull")
+- `--directory`: **(Mandatory)** Path to the directory containing MP3 files to transcribe.
   ```bash
   --directory podcasts/the_bull
   ```
 
-- `--model`: Whisper model size to use (default: "base")
+- `--model`: Whisper model size to use (default: "medium")
   ```bash
-  --model mediumn  # Options: tiny, base, small, medium, large-v1, large-v2, large-v3
+  --model medium  # Options: tiny, base, small, medium, large-v1, large-v2, large-v3
   ```
   Available model sizes:
   - tiny: Fastest but least accurate

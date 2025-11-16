@@ -8,6 +8,8 @@ Update the strings if the clean-up is not satistying.
 """
 import argparse
 import logging
+import re
+from datetime import datetime
 from typing import List
 from pathlib import Path
 
@@ -67,9 +69,19 @@ def beaufity_and_merge_files(
         content = beautify_text(content, file_path.name)
 
         with open(output_file_path, 'a') as f:
-          f.write(file_path.stem)
+          f.write(f"## {file_path.stem[11:]}")
           f.write('\n')
+          
+          # Extract date from filename and write it
+          match = re.match(r'\[(\d{8})\]', file_path.name)
+          if match:
+              date_str = match.group(1)
+              formatted_date = datetime.strptime(date_str, '%Y%m%d').strftime('Published on %Y-%m-%d')
+              f.write(f"_{formatted_date}_  ")
+              f.write('\n')
+
           f.write(content)
+          f.write('\n')
           f.write('\n')
           f.write('\n')
 
@@ -194,7 +206,7 @@ def main() -> None:
   """
   #directory_path: str = input("Enter the directory path: ")
   directory_path: str = "podcasts/the_bull"
-  output_file_path: str = "podcasts/the_bull_total.txt"
+  output_file_path: str = "podcasts/the_bull_total.md"
   beaufity_and_merge_files(directory_path, output_file_path)
 
 
