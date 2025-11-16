@@ -42,9 +42,9 @@ The project is structured as a command-line application. All output and operatio
         ```
 
 2.  **Transcribe podcasts:**
-    *   Run the `trascript_podcasts.py` script with the following command, specifying the directory containing the downloaded MP3 files, the desired Whisper model, and the log level:
+    *   Run the `transcript_podcasts.py` script with the following command, specifying the directory containing the downloaded MP3 files, the desired Whisper model, and the log level:
         ```bash
-        python trascript_podcasts.py --directory podcasts/the_bull --model medium --log-level INFO
+        python transcript_podcasts.py --directory podcasts/the_bull --model medium --log-level INFO
         ```
 
 3.  **Merge and beautify transcripts:**

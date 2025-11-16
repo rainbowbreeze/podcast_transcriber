@@ -158,7 +158,6 @@ def main() -> None:
     )
     parser.add_argument(
         "--directory",
-        default="podcasts/the_bull",
         help="Directory containing MP3 files"
         )
     parser.add_argument(
@@ -168,7 +167,8 @@ def main() -> None:
         help="Whisper model size to use"
         )
     parser.add_argument(
-        "--log-level", default="INFO",
+        "--log-level",
+        default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         help="Set the logging level"
         )
@@ -177,6 +177,11 @@ def main() -> None:
     
     # Set up logging with the specified level
     setup_logging(getattr(logging, args.log_level))
+
+    if not args.directory:
+        print("Error: Please specify the directory containing the MP3 files to transcribe.")
+        print("Usage: python trascript_podcasts.py --directory /path/to/your/mp3/files")
+        return
     
     list_and_transcribe_files_in_directory(args.directory, args.model)
 
