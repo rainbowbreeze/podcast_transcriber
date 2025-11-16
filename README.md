@@ -91,8 +91,8 @@ More on available models at https://absadiki.github.io/pywhispercpp/#pywhispercp
   - medium: 264 secs
 - Quality of the models:
   - The quality bump in the translation between base and small model is noticable, with small model way better than base model (more words translated, better puntuation, etc).
-  - The quality bump in the translation between small and medium, altough noticable, doesn't impact significantly the final quality of the translation. Medium model captured a few specific words, while small model didn't, some more abbreviations and brand names, but the message is understandable.
-  - Because the time difference once GPU is used decrease significantly, my suggestion is to use the medium model, unless there are speficic reasons for using another model
+  - The quality bump in the translation between small and medium, altough noticable, doesn't impact significantly the final quality of the translation. However, medium model captured a few specific words, while small model didn't, some more abbreviations and brand names, but the message is understandable.
+  - So, **my reccommendation** is to use small model, if only CPU is available: it does its job with minor issues. Otherwise, if a GPU is available, or a good quality of the transcription is needed, or time is not an issue, use the medium model.
 - Temporary WAV files are created during processing in the podcasts directory, and automatically cleaned up if the translation was successful
 - whisper models are downloaded under the `whisper_models` project folder, instead of user folder.
   - change it in the code if you prefer to use shared models across different apps using whispercpp module.
