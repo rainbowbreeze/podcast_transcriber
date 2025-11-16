@@ -1,12 +1,40 @@
-import argparse
+"""
+This merger clean-up the text of the "The Bull - Il tuo podcast di finanza personale" podcast,
+removing the advertising at the beginning and at the end of each episode.
 
+It uses some keywords generally found in the transcription.
+
+Update the strings if the clean-up is not satistying.
+"""
+import argparse
+import logging
 from typing import List
 from pathlib import Path
 
+# Global logger variable
+logger : logging.Logger
+
+
+def setup_logging(log_level=logging.INFO):
+    """
+    Set up logging configuration.
+    
+    Args:
+        log_level: The logging level to use (default: INFO)
+    """
+    global logger
+    logging.basicConfig(
+        level=log_level,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    logger = logging.getLogger(__name__)
+    return logger
+
+
 def beaufity_and_merge_files(
     directory_path: str, 
-    output_file_path: str, 
-    verbose: bool = False
+    output_file_path: str
     ) -> None:
   """
   Find all trascript files in a directory, "beautify" the text and merge everything in a single file
@@ -14,7 +42,6 @@ def beaufity_and_merge_files(
   Args:
     directory_path: The path to the directory.
     output_file_path: The path of the destination file where the final text will be added
-    verbose: print more verbose output of the executed operations
 
   Returns:
     None. The output is saved in the output file
@@ -28,14 +55,16 @@ def beaufity_and_merge_files(
       output_file.unlink()
       output_file = None
 
-    for file_path in path.iterdir():
-      if file_path.is_file() and ".txt" == file_path.suffix:
-        print(f"Processing {file_path.name}")
+    txt_files = [file_path for file_path in path.iterdir() if file_path.is_file() and ".txt" == file_path.suffix]
+    txt_files.sort(key=lambda x: x.name)
+
+    for file_path in txt_files:
+        logger.debug(f"Processing {file_path.name}")
 
         with open(str(file_path), "r") as f:
           content: str = f.read()
         
-        content = beautify_text(content)
+        content = beautify_text(content, file_path.name)
 
         with open(output_file_path, 'a') as f:
           f.write(file_path.stem)
@@ -45,23 +74,23 @@ def beaufity_and_merge_files(
           f.write('\n')
 
   except FileNotFoundError:
-    print(f"Error: Directory '{directory_path}' not found.")
+    logger.error(f"Error: Directory '{directory_path}' not found.")
 
 
 
 def beautify_text(
     source_text: str,
-    verbose: bool = False
+    file_name: str
     ) -> str:
   """
   Take a transcripted podcast text, and clean it up.
 
   Args:
     source_text: The text to beautify.
-    verbose: print more verbose output of the executed operations
-
+    file_name: The name of the file - only used for logging purposes
+    
   Returns:
-    str. The text improve.
+    str. The text improved.
   """
 
   # Check for initial parts to remove
@@ -95,11 +124,11 @@ def beautify_text(
       # Add the additional punctiation mark and then the space
       pos += 2
       source_text = source_text[pos:]
-      #print(f" Head \"{search_keyword}\" found at position {pos}")
+      #logger.debug(f" Head \"{search_keyword}\" found at position {pos}")
       break
   
   if pos == -1 or pos > 2000:
-    print(f" ** Head - Nothing to clean-up...")
+    logger.info(f" ** Head - Nothing to clean-up for {file_name}")
 
 
   # Check for final parts to remove
@@ -149,37 +178,39 @@ def beautify_text(
     # < 20000 means the string was found at the closing of the podcast, not a the beginning
     if pos != -1 and pos > 15500:
       source_text = source_text[:pos]
-      #print(f" Tail \"{search_keyword}\" found at position {pos}")
+      #logger.debug(f" Tail \"{search_keyword}\" found at position {pos}")
       break
   
   if pos == -1 or pos < 15500:
-    print(f" ** Tails - Nothing to clean-up...")
+    logger.info(f" ** Tails - Nothing to clean-up for {file_name}")
 
   return source_text
 
 
 
-def main(verbose: bool = False) -> None:
+def main() -> None:
   """
   Gets the directory path from the user and lists the files.
-
-  Args:
-    verbose: print more verbose output of the executed operations
   """
   #directory_path: str = input("Enter the directory path: ")
   directory_path: str = "podcasts/the_bull"
   output_file_path: str = "podcasts/the_bull_total.txt"
-  beaufity_and_merge_files(directory_path, output_file_path, verbose)
+  beaufity_and_merge_files(directory_path, output_file_path)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Merge different podcast transcription files in a single file")
 
     # optional boolean parameter
-    parser.add_argument("-v", "--verbose", action="store_true", default=False, help="Increase output verbosity")
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Set the logging level"
+        )
     args = parser.parse_args()
 
-    if args.verbose:
-        print("Verbose mode enabled.")
+    # Set up logging with the specified level
+    setup_logging(getattr(logging, args.log_level))
 
-    main(args.verbose)
+    main()

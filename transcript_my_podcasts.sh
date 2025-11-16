@@ -4,6 +4,9 @@
 source .venv/bin/activate
 python -m podcast_downloader --config podcast-downloader-config.json
 python transcript_podcasts.py --directory podcasts/the_bull --model medium --log-level INFO
+
+python beautify_the_bull.py
+
 deactivate
 
 
