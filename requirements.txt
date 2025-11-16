@@ -1,7 +1,6 @@
 # Download podcasts
 podcast-downloader
-
-# File transcriptions
+# Audio file format conversion
 pydub
 # https://absadiki.github.io/pywhispercpp/
 pywhispercpp
